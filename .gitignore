@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Working folder where new images can be dropped before being copied to public/listings/
+/images
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
