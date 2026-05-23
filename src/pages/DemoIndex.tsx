@@ -168,7 +168,7 @@ export function DemoIndex() {
                     {formatM3(currentResident.entitlementRemainingM3)} left
                   </>
                 ) : (
-                  'No one signed in. Protected pages will bounce to the welcome screen.'
+                  'No one signed in. Protected pages will auto-pick Amelia Tran (Apt 1A) — pick someone else above to switch.'
                 )}
               </p>
             </div>
