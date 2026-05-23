@@ -21,7 +21,7 @@ export function Login() {
   const [personaId, setPersonaId] = useState<string>('r_amelia')
 
   useEffect(() => {
-    if (currentUserId) navigate('/', { replace: true })
+    if (currentUserId) navigate('/dashboard', { replace: true })
   }, [currentUserId, navigate])
 
   const handleSubmit = (e: FormEvent) => {
@@ -34,12 +34,12 @@ export function Login() {
       )
       return
     }
-    navigate('/', { replace: true })
+    navigate('/dashboard', { replace: true })
   }
 
   const handlePersona = () => {
     loginAs(personaId)
-    navigate('/', { replace: true })
+    navigate('/dashboard', { replace: true })
   }
 
   return (

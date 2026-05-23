@@ -58,7 +58,7 @@ const entryFlow: RouteCard[] = [
 
 const residentApp: RouteCard[] = [
   {
-    to: '/',
+    to: '/dashboard',
     title: 'Dashboard',
     blurb:
       "The resident's home. Their entitlement bar, the next collection day, recent give-aways, m³ on offer.",
@@ -196,7 +196,7 @@ export function DemoIndex() {
                 variant="outline"
                 size="md"
                 className="bg-white w-full sm:w-auto"
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/dashboard')}
                 disabled={!currentUserId}
               >
                 Open dashboard <ArrowRight className="h-4 w-4" />

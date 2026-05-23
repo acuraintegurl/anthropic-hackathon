@@ -5,7 +5,7 @@ import { useAppData } from '../context/AppDataContext'
 import { cn, formatM3 } from '../lib/utils'
 
 const navItems = [
-  { to: '/', label: 'Dashboard', end: true },
+  { to: '/dashboard', label: 'Dashboard', end: true },
   { to: '/marketplace', label: 'Give-aways' },
   { to: '/entitlements', label: 'Share m³' },
   { to: '/collection-day', label: 'Collection day' },
@@ -27,7 +27,7 @@ export function Layout() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center gap-2.5">
+            <Link to="/dashboard" className="flex items-center gap-2.5">
               <div className="h-9 w-9 rounded-lg bg-brand-600 grid place-items-center text-white">
                 <Building2 className="h-5 w-5" />
               </div>
@@ -136,7 +136,7 @@ export function Layout() {
             </Link>
             <span className="text-slate-300">·</span>
             <Link
-              to="/demo"
+              to="/"
               className="text-slate-400 hover:text-brand-700 underline-offset-2 hover:underline"
             >
               Demo navigator

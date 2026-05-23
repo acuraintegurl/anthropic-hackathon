@@ -16,13 +16,13 @@ import { Profile } from './pages/Profile'
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<DemoIndex />} />
       <Route path="/welcome" element={<Welcome />} />
       <Route path="/qr-poster" element={<QrPoster />} />
-      <Route path="/demo" element={<DemoIndex />} />
       <Route path="/login" element={<Login />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/listings/new" element={<NewListing />} />
           <Route path="/listings/:id" element={<ListingDetail />} />

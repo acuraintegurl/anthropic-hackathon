@@ -40,7 +40,7 @@ export function Welcome() {
     document.title = `${building.name} · Hard Waste Hub`
   }, [building.name])
 
-  if (currentUserId) return <Navigate to="/" replace />
+  if (currentUserId) return <Navigate to="/dashboard" replace />
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-brand-50 via-white to-slate-50">
