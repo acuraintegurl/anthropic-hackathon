@@ -174,11 +174,16 @@ export function Dashboard() {
                       {poster?.name} · {poster?.aptNumber}
                     </p>
                   </div>
-                  {listing.status === 'available' ? (
+                  {listing.status === 'available' && (
                     <Badge variant="success">Available</Badge>
-                  ) : listing.status === 'claimed' ? (
+                  )}
+                  {listing.status === 'reserved' && (
+                    <Badge variant="warning">Reserved</Badge>
+                  )}
+                  {listing.status === 'claimed' && (
                     <Badge variant="warning">Claimed</Badge>
-                  ) : (
+                  )}
+                  {listing.status === 'collected' && (
                     <Badge variant="neutral">Collected</Badge>
                   )}
                 </Link>

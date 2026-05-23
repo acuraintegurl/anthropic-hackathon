@@ -12,6 +12,8 @@ import { ListingDetail } from './pages/ListingDetail'
 import { Entitlements } from './pages/Entitlements'
 import { CollectionDay } from './pages/CollectionDay'
 import { Profile } from './pages/Profile'
+import { Impact } from './pages/Impact'
+import { Notifications } from './pages/Notifications'
 
 export default function App() {
   return (
@@ -28,6 +30,8 @@ export default function App() {
           <Route path="/listings/:id" element={<ListingDetail />} />
           <Route path="/entitlements" element={<Entitlements />} />
           <Route path="/collection-day" element={<CollectionDay />} />
+          <Route path="/impact" element={<Impact />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>

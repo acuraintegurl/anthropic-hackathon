@@ -9,6 +9,8 @@ const navItems = [
   { to: '/marketplace', label: 'Give-aways' },
   { to: '/entitlements', label: 'Share m³' },
   { to: '/collection-day', label: 'Collection day' },
+  { to: '/impact', label: 'Impact' },
+  { to: '/notifications', label: 'Notifications' },
   { to: '/profile', label: 'Profile' },
 ]
 

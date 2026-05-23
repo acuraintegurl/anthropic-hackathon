@@ -1,9 +1,12 @@
 import type {
+  AppNotification,
   Building,
   CollectionDay,
   CollectionItem,
   EntitlementShare,
   FurnitureListing,
+  ItemCategory,
+  NotificationPrefs,
   Resident,
 } from '../types'
 
@@ -12,6 +15,7 @@ export const BUILDING: Building = {
   name: 'Brunswick Heights',
   address: '42 Sydney Rd, Brunswick VIC 3056',
   totalUnits: 12,
+  joinCode: 'BRUNS-42',
 }
 
 export const FY = 'FY2025-26'
@@ -182,3 +186,49 @@ export const COLLECTION_ITEMS: CollectionItem[] = [
   { id: 'ci_5', collectionDayId: 'cd_2026_q1', residentId: 'r_dani', title: 'Rolled-up rug', category: 'furniture', estimatedM3: 0.3 },
   { id: 'ci_6', collectionDayId: 'cd_2026_q1', residentId: 'r_finn', title: 'Old dishwasher (door removed)', category: 'whitegoods', estimatedM3: 0.4 },
 ]
+
+export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
+  furniture: true,
+  whitegoods: false,
+  ewaste: false,
+  mattress: false,
+}
+
+export const NOTIFICATIONS: AppNotification[] = [
+  {
+    id: 'n_1',
+    kind: 'new_listing',
+    category: 'furniture',
+    title: 'New give-away: Two-seater couch, charcoal',
+    body: 'Amelia (Apt 1A) just posted a piece in Furniture — matches your preferences.',
+    createdAt: daysAgo(3),
+    href: '/listings/l_couch',
+  },
+  {
+    id: 'n_2',
+    kind: 'share_offered',
+    title: 'Kira (Apt 6A) offered 0.5m³',
+    body: 'Open to whoever needs it — claim from the Share m³ tab.',
+    createdAt: daysAgo(4),
+    href: '/entitlements',
+  },
+  {
+    id: 'n_3',
+    kind: 'collection_reminder',
+    title: 'Building collection day in 3 weeks',
+    body: 'Amelia is organising. Add anything bulky to the pool before then.',
+    createdAt: daysAgo(1),
+    href: '/collection-day',
+  },
+  {
+    id: 'n_4',
+    kind: 'reservation_expiring',
+    category: 'furniture',
+    title: 'A bookshelf you reserved expires in 2 hours',
+    body: 'Confirm collected — or let the hold lapse so someone else can claim it.',
+    createdAt: daysAgo(0),
+  },
+]
+
+// Categories that aren't currently noisy in the seed but show what would be filtered.
+export const ALL_CATEGORIES: ItemCategory[] = ['furniture', 'whitegoods', 'ewaste', 'mattress']

@@ -25,6 +25,9 @@ export function ListingCard({ listing }: { listing: FurnitureListing }) {
           {listing.status === 'available' && (
             <Badge variant="success">Available</Badge>
           )}
+          {listing.status === 'reserved' && (
+            <Badge variant="warning">Reserved</Badge>
+          )}
           {listing.status === 'claimed' && (
             <Badge variant="warning">Claimed</Badge>
           )}

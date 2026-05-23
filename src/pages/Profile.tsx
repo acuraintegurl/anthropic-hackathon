@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { Mail } from 'lucide-react'
+import { Award, Lock, Mail } from 'lucide-react'
 import { useAppData } from '../context/AppDataContext'
+import { BADGE_CATALOG } from '../types'
 import {
   Card,
   CardContent,
@@ -10,7 +11,7 @@ import {
 } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
 import { EntitlementBar } from '../components/EntitlementBar'
-import { formatDateShort, formatM3 } from '../lib/utils'
+import { cn, formatDateShort, formatM3 } from '../lib/utils'
 
 export function Profile() {
   const {
@@ -19,6 +20,7 @@ export function Profile() {
     shares,
     collectionItems,
     getResident,
+    badgesFor,
   } = useAppData()
 
   if (!currentUser) return null
@@ -32,6 +34,7 @@ export function Profile() {
     (ci) => ci.residentId === currentUser.id,
   )
   const myPooledM3 = myPoolItems.reduce((sum, i) => sum + i.estimatedM3, 0)
+  const earnedBadges = badgesFor(currentUser.id)
 
   return (
     <div className="space-y-6">
@@ -91,6 +94,66 @@ export function Profile() {
 
       <Card>
         <CardHeader>
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <CardTitle>Badges</CardTitle>
+              <CardDescription>
+                Earned {earnedBadges.size} of {BADGE_CATALOG.length}.
+              </CardDescription>
+            </div>
+            <Award className="h-5 w-5 text-amber-500" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {BADGE_CATALOG.map((b) => {
+              const earned = earnedBadges.has(b.key)
+              return (
+                <li
+                  key={b.key}
+                  className={cn(
+                    'flex items-start gap-3 rounded-lg border p-3',
+                    earned
+                      ? 'bg-amber-50 border-amber-100'
+                      : 'bg-slate-50 border-slate-100',
+                  )}
+                >
+                  <div
+                    className={cn(
+                      'h-10 w-10 rounded-full grid place-items-center shrink-0',
+                      earned
+                        ? 'bg-amber-200 text-amber-800'
+                        : 'bg-slate-200 text-slate-400',
+                    )}
+                  >
+                    {earned ? (
+                      <Award className="h-5 w-5" />
+                    ) : (
+                      <Lock className="h-4 w-4" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className={cn(
+                        'text-sm font-medium',
+                        earned ? 'text-amber-900' : 'text-slate-500',
+                      )}
+                    >
+                      {b.label}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                      {b.description}
+                    </p>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Your give-away listings</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -126,6 +189,9 @@ export function Profile() {
                   </div>
                   {l.status === 'available' && (
                     <Badge variant="success">Available</Badge>
+                  )}
+                  {l.status === 'reserved' && (
+                    <Badge variant="warning">Reserved</Badge>
                   )}
                   {l.status === 'claimed' && (
                     <Badge variant="warning">Claimed</Badge>

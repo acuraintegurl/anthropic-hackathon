@@ -7,11 +7,12 @@ import { cn } from '../lib/utils'
 import { CATEGORY_SHORT, type ItemCategory, type ListingStatus } from '../types'
 
 type OwnerFilter = 'all' | 'mine'
+type StatusFilter = 'active' | ListingStatus | 'all'
 
 export function Marketplace() {
   const { listings, currentUser } = useAppData()
   const [filter, setFilter] = useState<OwnerFilter>('all')
-  const [statusFilter, setStatusFilter] = useState<ListingStatus | 'all'>('all')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('active')
   const [categoryFilter, setCategoryFilter] = useState<ItemCategory | 'all'>(
     'all',
   )
@@ -20,12 +21,24 @@ export function Marketplace() {
   if (filter === 'mine' && currentUser) {
     filtered = filtered.filter((l) => l.postedById === currentUser.id)
   }
-  if (statusFilter !== 'all') {
+  if (statusFilter === 'active') {
+    // The R3 fix: dead posts disappear from the active feed.
+    filtered = filtered.filter(
+      (l) => l.status === 'available' || l.status === 'reserved',
+    )
+  } else if (statusFilter !== 'all') {
     filtered = filtered.filter((l) => l.status === statusFilter)
   }
   if (categoryFilter !== 'all') {
     filtered = filtered.filter((l) => l.category === categoryFilter)
   }
+
+  const hiddenCount =
+    statusFilter === 'active'
+      ? listings.filter(
+          (l) => l.status === 'claimed' || l.status === 'collected',
+        ).length
+      : 0
 
   return (
     <div className="space-y-6">
@@ -35,8 +48,7 @@ export function Marketplace() {
             Furniture give-aways
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Free pieces from your neighbours — keep usable items out of
-            landfill.
+            Free pieces from your neighbours — only what's still up for grabs.
           </p>
         </div>
         <Link
@@ -66,10 +78,10 @@ export function Marketplace() {
         <span className="text-slate-300">·</span>
         <div className="flex gap-1 p-1 bg-slate-100 rounded-lg">
           <FilterChip
-            active={statusFilter === 'all'}
-            onClick={() => setStatusFilter('all')}
+            active={statusFilter === 'active'}
+            onClick={() => setStatusFilter('active')}
           >
-            Any status
+            Active
           </FilterChip>
           <FilterChip
             active={statusFilter === 'available'}
@@ -78,16 +90,16 @@ export function Marketplace() {
             Available
           </FilterChip>
           <FilterChip
-            active={statusFilter === 'claimed'}
-            onClick={() => setStatusFilter('claimed')}
+            active={statusFilter === 'reserved'}
+            onClick={() => setStatusFilter('reserved')}
           >
-            Claimed
+            Reserved
           </FilterChip>
           <FilterChip
-            active={statusFilter === 'collected'}
-            onClick={() => setStatusFilter('collected')}
+            active={statusFilter === 'all'}
+            onClick={() => setStatusFilter('all')}
           >
-            Collected
+            Show history
           </FilterChip>
         </div>
         <span className="text-slate-300">·</span>
@@ -124,6 +136,20 @@ export function Marketplace() {
           </FilterChip>
         </div>
       </div>
+
+      {statusFilter === 'active' && hiddenCount > 0 && (
+        <p className="text-xs text-slate-500">
+          {hiddenCount} past listing{hiddenCount === 1 ? '' : 's'} hidden —{' '}
+          <button
+            type="button"
+            className="text-brand-700 font-medium hover:underline"
+            onClick={() => setStatusFilter('all')}
+          >
+            show history
+          </button>
+          .
+        </p>
+      )}
 
       {filtered.length === 0 ? (
         <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-xl">
