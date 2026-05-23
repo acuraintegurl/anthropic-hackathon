@@ -36,6 +36,24 @@ A resident, owners' corp member, or building manager who oversees their building
 **Tertiary persona — City of Melbourne Waste Team.**
 The council partner. Receives consolidated, verified bookings instead of fragmented individual ones. Sees data on diversion and dumping reduction.
 
+### 4.1 User research findings
+
+Three findings from talking to apartment residents shape the product:
+
+- **R1 — Residents resist creating yet another account.** Asked about login, the response was consistently "do I have to?" Implication: onboarding must be passwordless and one-step. Building-issued code + unit confirmation + (optionally) a magic link. No password screen.
+- **R2 — Owners' corps and building managers already ship resident apps.** Wumbo, Residential, and Home App are commonly installed in Melbourne apartment estates and cover maintenance requests, bills, shared-space booking, and message boards. Residents will not install a second app for an occasional behaviour like hard waste. Implication: the long-term destination is **embedded inside / SSO'd from** one of those incumbent apps, not a standalone install. For the hackathon we ship standalone, but the data model and auth assume "delegated identity from the building's app" is the v1 path.
+- **R3 — WhatsApp is the informal incumbent, and it's failing.** Many buildings have a resident WhatsApp group already coordinating give-aways. Two consistent complaints: notification noise (every message pings everyone) and findability (listings scroll out of view within hours and can't be searched). Implication: the product must beat WhatsApp on the two axes residents actually complained about — **structured listings with status states** (reserved / claimed / gone, so dead posts disappear) and **quiet-by-default notifications** (opt-in by category, not broadcast).
+
+### 4.2 Existing solutions & positioning
+
+| Tool | What it does | Where we fit |
+|---|---|---|
+| Wumbo / Residential / Home App | OC-managed: maintenance, bills, shared-space booking, building message board | **Complementary.** One feature deep on hard waste + reuse. Future: embed as a module or SSO in. Do not compete on bills or maintenance. |
+| Resident WhatsApp groups | Informal give-away coordination | **Direct displacement.** Same job-to-be-done, fixes the noise + findability failures residents already named. |
+| Council hard waste portal | Per-household booking | **Sits behind us.** We aggregate bookings into the council portal; resident never visits it directly. |
+
+The pitch sentence: *"What your building's WhatsApp group is already trying to do — but searchable, statusful, and plugged into council's entitlement system."*
+
 ## 5. Goals
 
 - **G1.** Make it trivially easy for a resident to donate an unused entitlement to their building's pool.
@@ -50,6 +68,8 @@ The council partner. Receives consolidated, verified bookings instead of fragmen
 - Houses / non-apartment dwellings.
 - Logistics beyond the building's existing curbside collection point.
 - A native mobile app (web responsive is enough for the demo).
+- Traditional username + password login (see R1 — passwordless only).
+- Competing with Wumbo / Residential / Home App on bills, maintenance, or shared-space booking (see R2 — stay one-feature-deep).
 
 ## 7. Core user flows
 
@@ -74,16 +94,19 @@ The council partner. Receives consolidated, verified bookings instead of fragmen
 
 | # | Feature | Priority |
 |---|---|---|
-| F1 | Resident sign-up tied to a building + unit | P0 |
+| F1 | Passwordless onboarding — building code + unit confirmation, no password (see R1) | P0 |
 | F2 | Entitlement balance display + "Donate to pool" action | P0 |
 | F3 | Building pool view (entitlements available, contributors) | P0 |
 | F4 | Furniture listing — photo, category, dimensions, status | P0 |
-| F5 | Building-internal feed + claim flow | P0 |
+| F5 | Building-internal feed + claim flow, with status states (available / reserved / claimed / gone) so dead listings disappear (see R3) | P0 |
 | F6 | Coordinator dashboard: queue, pool, book collection | P0 |
 | F7 | Council submission stub (mocked API, real-looking payload) | P0 |
-| F8 | Audit trail per entitlement (who donated, who used it, when) | P1 |
-| F9 | In-app chat for pickup coordination | P1 |
-| F10 | "Items diverted from landfill" running counter | P1 |
+| F8 | Eco Footprint view — kg diverted from landfill, estimated CO₂ saved, monthly chart by category | P0 |
+| F9 | Audit trail per entitlement (who donated, who used it, when) | P1 |
+| F10 | In-app chat for pickup coordination | P1 |
+| F11 | Quiet-by-default notifications — opt-in by category, not broadcast (see R3) | P1 |
+| F12 | Building leaderboard — residents ranked by items diverted + entitlements donated | P1 |
+| F13 | Badges — first listing, first claim, first donor, streaks | P1 |
 
 ## 9. Council integration (P0 for the pitch, mocked for the build)
 
@@ -112,18 +135,18 @@ For a real pilot (the slide-ware metric):
 - City-wide furniture marketplace once a building has saturated demand.
 - Integration with op-shops and charity pickups (Sacred Heart Mission, Vinnies) for items worth refurbishing.
 - Extending to other councils (Yarra, Port Phillip, Stonnington) — same model, different API.
-- Gamification / building leaderboards for diversion rates.
+- **Embedding inside incumbent building apps (Wumbo, Residential, Home App)** via SSO / module — the eventual distribution play per R2.
 
 ## 12. Tech notes
 
 - Stack: existing Vite + React + TypeScript + Tailwind scaffold in this repo.
 - Persistence: in-memory / localStorage for the demo; document the data model so council integration is plausible.
-- Auth: mock login with seeded residents — no real auth for the hackathon.
+- Auth: passwordless by design (see R1). For the hackathon: tap a seeded resident from a building-code splash — no password screen, no email roundtrip. For v1 real: building code + unit + magic link. Data model assumes a future identity provider (council, OC, or incumbent building app) can vouch for the resident.
 - Council API: TypeScript interface + fake implementation that returns deterministic responses for the demo.
 
 ## 13. Demo script (3 minutes)
 
-1. **30s — the problem.** Show council's hard waste page. "Every household gets 1m³. Most apartments never use it. The ones that need more dump on the street."
-2. **60s — Flow A + B.** Resident donates an entitlement. Another resident lists a couch. A third resident claims it. The couch never enters landfill.
-3. **60s — Flow C.** Coordinator books a consolidated collection for the unclaimed items, drawing from the pool. Show the council payload.
-4. **30s — the pitch.** "Same allowance, no new infrastructure, less dumping. Built by residents, partnered with council."
+1. **30s — the problem.** Show council's hard waste page, then a screenshot of a noisy resident WhatsApp group with give-away posts buried under chat. "Every household gets 1m³. Most apartments never use it. The ones that need more dump on the street. The ones already trying to share — do it in WhatsApp, and it doesn't work."
+2. **60s — Flow A + B.** Tap-to-enter as a resident (no login). Donate an entitlement. Another resident lists a couch. A third resident claims it — listing flips to "claimed" and disappears from the active feed. The couch never enters landfill.
+3. **60s — Flow C.** Coordinator books a consolidated collection for the unclaimed items, drawing from the pool. Show the council payload. Cut to the Eco Footprint view — kg diverted ticks up, building leaderboard reshuffles.
+4. **30s — the pitch.** "Same allowance, no new infrastructure, less dumping. Built by residents, partnered with council. Designed to slot into the building apps they already have."

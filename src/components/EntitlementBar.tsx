@@ -1,4 +1,4 @@
-import { cn, formatM2 } from '../lib/utils'
+import { cn, formatM3 } from '../lib/utils'
 
 type Props = {
   remaining: number
@@ -22,9 +22,9 @@ export function EntitlementBar({
           {label ?? 'Entitlement remaining'}
         </span>
         <span className="text-sm font-semibold text-slate-900">
-          {formatM2(remaining)}{' '}
+          {formatM3(remaining)}{' '}
           <span className="text-slate-400 font-normal">
-            of {formatM2(capacity)}
+            of {formatM3(capacity)}
           </span>
         </span>
       </div>

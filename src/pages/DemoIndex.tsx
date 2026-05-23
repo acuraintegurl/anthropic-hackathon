@@ -19,7 +19,7 @@ import { useAppData } from '../context/AppDataContext'
 import { Button } from '../components/ui/Button'
 import { Select } from '../components/ui/Select'
 import { Label } from '../components/ui/Label'
-import { formatM2 } from '../lib/utils'
+import { formatM3 } from '../lib/utils'
 
 type RouteCard = {
   to: string
@@ -61,7 +61,7 @@ const residentApp: RouteCard[] = [
     to: '/',
     title: 'Dashboard',
     blurb:
-      "The resident's home. Their entitlement bar, the next collection day, recent give-aways, m² on offer.",
+      "The resident's home. Their entitlement bar, the next collection day, recent give-aways, m³ on offer.",
     icon: <LayoutDashboard className="h-4 w-4" />,
     badge: 'protected',
   },
@@ -83,9 +83,9 @@ const residentApp: RouteCard[] = [
   },
   {
     to: '/entitlements',
-    title: 'Share m²',
+    title: 'Share m³',
     blurb:
-      'Donate unused m² to the pool or claim from neighbours who have spare entitlement.',
+      'Donate unused m³ to the pool or claim from neighbours who have spare entitlement.',
     icon: <Share2 className="h-4 w-4" />,
     badge: 'protected',
   },
@@ -93,7 +93,7 @@ const residentApp: RouteCard[] = [
     to: '/collection-day',
     title: 'Collection day',
     blurb:
-      'The consolidated booking. Add items to the pool, see whose m² is being drawn down.',
+      'The consolidated booking. Add items to the pool, see whose m³ is being drawn down.',
     icon: <CalendarDays className="h-4 w-4" />,
     badge: 'protected',
   },
@@ -165,7 +165,7 @@ export function DemoIndex() {
                       {currentResident.name}
                     </span>{' '}
                     ({currentResident.aptNumber}) ·{' '}
-                    {formatM2(currentResident.entitlementRemainingM2)} left
+                    {formatM3(currentResident.entitlementRemainingM3)} left
                   </>
                 ) : (
                   'No one signed in. Protected pages will bounce to the welcome screen.'
@@ -186,7 +186,7 @@ export function DemoIndex() {
                 {residents.map((r) => (
                   <option key={r.id} value={r.id}>
                     {r.name} ({r.aptNumber}) —{' '}
-                    {formatM2(r.entitlementRemainingM2)} left
+                    {formatM3(r.entitlementRemainingM3)} left
                   </option>
                 ))}
               </Select>
@@ -234,7 +234,7 @@ export function DemoIndex() {
             <RouteTile
               to={`/listings/${sampleListing.id}`}
               title={sampleListing.title}
-              blurb={`Listing detail for "${sampleListing.title}" — posted by a seeded resident, ${formatM2(sampleListing.estimatedM2)}.`}
+              blurb={`Listing detail for "${sampleListing.title}" — posted by a seeded resident, ${formatM3(sampleListing.estimatedM3)}.`}
               icon={<Sofa className="h-4 w-4" />}
               badge="protected"
             />

@@ -1,6 +1,13 @@
 import { useMemo, useState, type FormEvent } from 'react'
-import { CalendarDays, Trash2, UserCog } from 'lucide-react'
+import {
+  CalendarDays,
+  Clock,
+  ScrollText,
+  Trash2,
+  UserCog,
+} from 'lucide-react'
 import { useAppData } from '../context/AppDataContext'
+import { CATEGORY_SHORT, type ItemCategory } from '../types'
 import {
   Card,
   CardContent,
@@ -11,10 +18,11 @@ import {
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Label } from '../components/ui/Label'
+import { Select } from '../components/ui/Select'
 import { Badge } from '../components/ui/Badge'
 import { CollectionPoolMeter } from '../components/CollectionPoolMeter'
 import { EntitlementBar } from '../components/EntitlementBar'
-import { daysUntil, formatDate, formatM2 } from '../lib/utils'
+import { daysUntil, formatDate, formatM3 } from '../lib/utils'
 
 export function CollectionDay() {
   const {
@@ -30,20 +38,21 @@ export function CollectionDay() {
 
   const [title, setTitle] = useState('')
   const [size, setSize] = useState('0.25')
+  const [category, setCategory] = useState<ItemCategory>('furniture')
   const [error, setError] = useState<string | null>(null)
 
   if (!currentUser) return null
 
-  const pooledM2 = useMemo(
-    () => collectionItems.reduce((sum, ci) => sum + ci.estimatedM2, 0),
+  const pooledM3 = useMemo(
+    () => collectionItems.reduce((sum, ci) => sum + ci.estimatedM3, 0),
     [collectionItems],
   )
 
   const buildingCapacity = useMemo(
     () =>
-      residents.reduce((sum, r) => sum + r.entitlementRemainingM2, 0) +
-      pooledM2,
-    [residents, pooledM2],
+      residents.reduce((sum, r) => sum + r.entitlementRemainingM3, 0) +
+      pooledM3,
+    [residents, pooledM3],
   )
 
   const grouped = useMemo(() => {
@@ -67,19 +76,21 @@ export function CollectionDay() {
       setError('Pick an amount greater than 0.')
       return
     }
-    if (sizeNum > currentUser.entitlementRemainingM2) {
+    if (sizeNum > currentUser.entitlementRemainingM3) {
       setError(
-        `You only have ${formatM2(currentUser.entitlementRemainingM2)} of entitlement left.`,
+        `You only have ${formatM3(currentUser.entitlementRemainingM3)} of entitlement left.`,
       )
       return
     }
     const ok = addCollectionItem({
       title: title.trim() || 'Hard waste item',
-      estimatedM2: sizeNum,
+      category,
+      estimatedM3: sizeNum,
     })
     if (ok) {
       setTitle('')
       setSize('0.25')
+      setCategory('furniture')
     }
   }
 
@@ -91,7 +102,7 @@ export function CollectionDay() {
         </h1>
         <p className="text-sm text-slate-500 mt-1">
           Pool your items against the building's combined entitlement —
-          everyone gets their stuff to the curb, nothing dumped illegally.
+          everyone gets their stuff to the kerbside, nothing dumped illegally.
         </p>
       </div>
 
@@ -119,9 +130,49 @@ export function CollectionDay() {
         </CardHeader>
         <CardContent>
           <CollectionPoolMeter
-            pooledM2={pooledM2}
-            buildingCapacityM2={buildingCapacity}
+            pooledM3={pooledM3}
+            buildingCapacityM3={buildingCapacity}
           />
+        </CardContent>
+      </Card>
+
+      <Card className="border-brand-100 bg-brand-50/40">
+        <CardContent className="space-y-3">
+          <div className="flex items-start gap-2 text-brand-900">
+            <ScrollText className="h-4 w-4 mt-0.5 shrink-0" />
+            <p className="text-sm">
+              <span className="font-semibold">From the City of Melbourne:</span>{' '}
+              <em>
+                "If you live in a high rise building, you can ask your building
+                manager to book a collection for you."
+              </em>{' '}
+              That's exactly how this pool works — {organizer?.name} books once
+              against {building.totalUnits} combined entitlements.
+            </p>
+          </div>
+          <ul className="grid sm:grid-cols-3 gap-3 text-xs text-slate-700">
+            <li className="flex items-start gap-2 rounded-md bg-white border border-slate-200 px-3 py-2">
+              <Clock className="h-3.5 w-3.5 mt-0.5 text-brand-700 shrink-0" />
+              <span>
+                <strong>Bookings essential.</strong> Council dates released
+                two months in advance.
+              </span>
+            </li>
+            <li className="flex items-start gap-2 rounded-md bg-white border border-slate-200 px-3 py-2">
+              <Clock className="h-3.5 w-3.5 mt-0.5 text-brand-700 shrink-0" />
+              <span>
+                <strong>Day-before placement.</strong> Items go to the
+                kerbside the day before collection — not earlier.
+              </span>
+            </li>
+            <li className="flex items-start gap-2 rounded-md bg-white border border-slate-200 px-3 py-2">
+              <Clock className="h-3.5 w-3.5 mt-0.5 text-brand-700 shrink-0" />
+              <span>
+                <strong>Kerbside only.</strong> Crews won't enter private
+                property — leave items clear of the title boundary.
+              </span>
+            </li>
+          </ul>
         </CardContent>
       </Card>
 
@@ -143,7 +194,7 @@ export function CollectionDay() {
             {grouped.map(([residentId, items]) => {
               const r = getResident(residentId)
               const subtotal = items.reduce(
-                (sum, i) => sum + i.estimatedM2,
+                (sum, i) => sum + i.estimatedM3,
                 0,
               )
               const isMe = residentId === currentUser.id
@@ -171,7 +222,7 @@ export function CollectionDay() {
                       </p>
                     </div>
                     <span className="text-xs text-slate-500 tabular-nums">
-                      {formatM2(subtotal)}
+                      {formatM3(subtotal)}
                     </span>
                   </div>
                   <ul className="space-y-1.5 pl-9">
@@ -180,10 +231,15 @@ export function CollectionDay() {
                         key={item.id}
                         className="flex items-center justify-between gap-3 text-sm"
                       >
-                        <span className="text-slate-700">{item.title}</span>
+                        <span className="text-slate-700 flex items-center gap-2 flex-wrap">
+                          {item.title}
+                          <Badge variant="outline" className="text-[10px]">
+                            {CATEGORY_SHORT[item.category]}
+                          </Badge>
+                        </span>
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-slate-500 tabular-nums">
-                            {formatM2(item.estimatedM2)}
+                            {formatM3(item.estimatedM3)}
                           </span>
                           {isMe && (
                             <button
@@ -213,9 +269,9 @@ export function CollectionDay() {
           </CardHeader>
           <CardContent className="space-y-4">
             <EntitlementBar
-              remaining={currentUser.entitlementRemainingM2}
+              remaining={currentUser.entitlementRemainingM3}
               capacity={1}
-              label="Your remaining m²"
+              label="Your remaining m³"
             />
             <form onSubmit={handleAdd} className="space-y-3">
               <div className="space-y-1.5">
@@ -229,13 +285,26 @@ export function CollectionDay() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="item-size">Size (m²)</Label>
+                <Label htmlFor="item-category">Category</Label>
+                <Select
+                  id="item-category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value as ItemCategory)}
+                >
+                  <option value="furniture">{CATEGORY_SHORT.furniture}</option>
+                  <option value="whitegoods">{CATEGORY_SHORT.whitegoods}</option>
+                  <option value="ewaste">{CATEGORY_SHORT.ewaste}</option>
+                  <option value="mattress">{CATEGORY_SHORT.mattress}</option>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="item-size">Size (m³)</Label>
                 <Input
                   id="item-size"
                   type="number"
                   step="0.05"
                   min="0.05"
-                  max={currentUser.entitlementRemainingM2}
+                  max={currentUser.entitlementRemainingM3}
                   required
                   value={size}
                   onChange={(e) => setSize(e.target.value)}
@@ -249,13 +318,13 @@ export function CollectionDay() {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={currentUser.entitlementRemainingM2 <= 0}
+                disabled={currentUser.entitlementRemainingM3 <= 0}
               >
                 Add to the pool
               </Button>
-              {currentUser.entitlementRemainingM2 <= 0 && (
+              {currentUser.entitlementRemainingM3 <= 0 && (
                 <p className="text-xs text-slate-500 text-center">
-                  Out of entitlement — claim some m² from a neighbour first.
+                  Out of entitlement — claim some m³ from a neighbour first.
                 </p>
               )}
             </form>
@@ -267,9 +336,9 @@ export function CollectionDay() {
         <CardContent className="text-xs text-slate-500 leading-relaxed">
           <strong className="text-slate-700">How the pool works.</strong> Each
           of the {building.totalUnits} apartments at {building.name} gets a
-          1m² hard-waste entitlement per financial year. By pooling against
-          one shared collection day, items get to the curb properly — no
-          illegal dumping, no wasted entitlements.
+          one cubic metre hard-waste entitlement per financial year. By pooling
+          against a single shared collection day, items get to the kerbside
+          properly — no illegal dumping, no wasted entitlements.
         </CardContent>
       </Card>
     </div>

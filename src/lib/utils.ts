@@ -28,8 +28,8 @@ export function daysUntil(iso: string): number {
   return Math.round((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 }
 
-export function formatM2(value: number): string {
-  return `${value.toFixed(value % 1 === 0 ? 0 : 2)}m²`
+export function formatM3(value: number): string {
+  return `${value.toFixed(value % 1 === 0 ? 0 : 2)}m³`
 }
 
 export function uid(prefix = 'id'): string {

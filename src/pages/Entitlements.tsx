@@ -14,7 +14,7 @@ import { Label } from '../components/ui/Label'
 import { Textarea } from '../components/ui/Textarea'
 import { Badge } from '../components/ui/Badge'
 import { EntitlementBar } from '../components/EntitlementBar'
-import { formatDateShort, formatM2 } from '../lib/utils'
+import { formatDateShort, formatM3 } from '../lib/utils'
 
 export function Entitlements() {
   const { shares, currentUser, getResident, offerShare, claimShare } =
@@ -43,15 +43,15 @@ export function Entitlements() {
       setError('Pick an amount greater than 0.')
       return
     }
-    if (amount > currentUser.entitlementRemainingM2) {
+    if (amount > currentUser.entitlementRemainingM3) {
       setError(
-        `You only have ${formatM2(currentUser.entitlementRemainingM2)} left to share.`,
+        `You only have ${formatM3(currentUser.entitlementRemainingM3)} left to share.`,
       )
       return
     }
     const ok = offerShare(amount, note.trim() || undefined)
     if (ok) {
-      setFlash(`Offered ${formatM2(amount)} to the block.`)
+      setFlash(`Offered ${formatM3(amount)} to the block.`)
       setM2('0.25')
       setNote('')
     }
@@ -66,11 +66,11 @@ export function Entitlements() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold text-slate-900">
-          Share your m²
+          Share your m³
         </h1>
         <p className="text-sm text-slate-500 mt-1">
           Lend or claim unused hard-waste entitlement. Each resident starts
-          with 1m² per financial year.
+          with 1m³ per financial year.
         </p>
       </div>
 
@@ -80,7 +80,7 @@ export function Entitlements() {
         </CardHeader>
         <CardContent>
           <EntitlementBar
-            remaining={currentUser.entitlementRemainingM2}
+            remaining={currentUser.entitlementRemainingM3}
             capacity={1}
           />
         </CardContent>
@@ -101,7 +101,7 @@ export function Entitlements() {
               <CardTitle>Available from neighbours</CardTitle>
             </div>
             <CardDescription>
-              Free m² being offered right now.
+              Free m³ being offered right now.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -133,7 +133,7 @@ export function Entitlements() {
                         · {offerer?.aptNumber}
                       </span>
                       <Badge variant="default">
-                        {formatM2(share.m2Amount)}
+                        {formatM3(share.m3Amount)}
                       </Badge>
                     </div>
                     {share.note && (
@@ -167,13 +167,13 @@ export function Entitlements() {
           <CardContent>
             <form onSubmit={handleOffer} className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="m2">Amount to offer (m²)</Label>
+                <Label htmlFor="m2">Amount to offer (m³)</Label>
                 <Input
                   id="m2"
                   type="number"
                   step="0.05"
                   min="0.05"
-                  max={currentUser.entitlementRemainingM2}
+                  max={currentUser.entitlementRemainingM3}
                   value={m2}
                   onChange={(e) => setM2(e.target.value)}
                   required
@@ -195,11 +195,11 @@ export function Entitlements() {
               )}
               <Button
                 type="submit"
-                disabled={currentUser.entitlementRemainingM2 <= 0}
+                disabled={currentUser.entitlementRemainingM3 <= 0}
               >
                 Offer to the block
               </Button>
-              {currentUser.entitlementRemainingM2 <= 0 && (
+              {currentUser.entitlementRemainingM3 <= 0 && (
                 <p className="text-xs text-slate-500">
                   You don't have any entitlement left to offer right now.
                 </p>
@@ -219,7 +219,7 @@ export function Entitlements() {
           <CardContent className="space-y-3">
             {mySharesOffered.length === 0 ? (
               <p className="text-sm text-slate-500">
-                You haven't offered any m² yet.
+                You haven't offered any m³ yet.
               </p>
             ) : (
               mySharesOffered.map((share) => {
@@ -231,7 +231,7 @@ export function Entitlements() {
                   >
                     <div>
                       <p className="text-sm font-medium text-slate-900">
-                        {formatM2(share.m2Amount)}
+                        {formatM3(share.m3Amount)}
                         {share.note && (
                           <span className="text-slate-500 font-normal">
                             {' '}
@@ -269,7 +269,7 @@ export function Entitlements() {
           <CardContent className="space-y-3">
             {sharesIReceived.length === 0 ? (
               <p className="text-sm text-slate-500">
-                You haven't claimed any shared m² yet.
+                You haven't claimed any shared m³ yet.
               </p>
             ) : (
               sharesIReceived.map((share) => {
@@ -281,7 +281,7 @@ export function Entitlements() {
                   >
                     <div>
                       <p className="text-sm font-medium text-slate-900">
-                        {formatM2(share.m2Amount)} from {offerer?.name}
+                        {formatM3(share.m3Amount)} from {offerer?.name}
                       </p>
                       <p className="text-xs text-slate-500">
                         {offerer?.aptNumber}

@@ -10,7 +10,7 @@ import {
 } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
 import { EntitlementBar } from '../components/EntitlementBar'
-import { formatDateShort, formatM2 } from '../lib/utils'
+import { formatDateShort, formatM3 } from '../lib/utils'
 
 export function Profile() {
   const {
@@ -31,7 +31,7 @@ export function Profile() {
   const myPoolItems = collectionItems.filter(
     (ci) => ci.residentId === currentUser.id,
   )
-  const myPooledM2 = myPoolItems.reduce((sum, i) => sum + i.estimatedM2, 0)
+  const myPooledM3 = myPoolItems.reduce((sum, i) => sum + i.estimatedM3, 0)
 
   return (
     <div className="space-y-6">
@@ -62,27 +62,27 @@ export function Profile() {
         <CardHeader>
           <CardTitle>Your hard-waste entitlement</CardTitle>
           <CardDescription>
-            Includes any m² received from neighbours and minus anything you've
+            Includes any m³ received from neighbours and minus anything you've
             offered or pooled.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <EntitlementBar
-            remaining={currentUser.entitlementRemainingM2}
+            remaining={currentUser.entitlementRemainingM3}
             capacity={1}
           />
           <div className="grid grid-cols-3 gap-3 mt-5 text-center">
-            <Stat label="m² in pool" value={formatM2(myPooledM2)} />
+            <Stat label="m³ in pool" value={formatM3(myPooledM3)} />
             <Stat
-              label="m² received"
-              value={formatM2(
-                sharesReceived.reduce((s, x) => s + x.m2Amount, 0),
+              label="m³ received"
+              value={formatM3(
+                sharesReceived.reduce((s, x) => s + x.m3Amount, 0),
               )}
             />
             <Stat
-              label="m² gifted"
-              value={formatM2(
-                sharesOffered.reduce((s, x) => s + x.m2Amount, 0),
+              label="m³ gifted"
+              value={formatM3(
+                sharesOffered.reduce((s, x) => s + x.m3Amount, 0),
               )}
             />
           </div>
@@ -164,7 +164,7 @@ export function Profile() {
                 >
                   <span className="text-slate-700">{item.title}</span>
                   <span className="text-slate-500 tabular-nums">
-                    {formatM2(item.estimatedM2)}
+                    {formatM3(item.estimatedM3)}
                   </span>
                 </li>
               ))}

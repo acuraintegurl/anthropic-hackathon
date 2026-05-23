@@ -8,7 +8,7 @@ from the ground up, residents driving their own circular-economy solutions.
 
 ## The problem
 
-Melbourne residents each receive **one 1m² hard-waste collection** per
+Melbourne residents each receive **one 1m³ hard-waste collection** per
 financial year. Two failure modes follow:
 
 1. Residents waste their entitlement when they have nothing bulky to throw out.
@@ -23,7 +23,7 @@ coordination.
 A web app for residents of a single block that lets them:
 
 - **Give furniture away** to neighbours before it becomes waste.
-- **Share unused m²** of their annual entitlement with a neighbour who needs
+- **Share unused m³** of their annual entitlement with a neighbour who needs
   more.
 - **Pool a single collection day** for the building, drawing against everyone's
   combined entitlement.
@@ -35,7 +35,7 @@ A web app for residents of a single block that lets them:
 - **Dashboard** with entitlement bar, next collection day, and quick stats
 - **Furniture marketplace** with post / claim / withdraw flow
 - **Entitlement sharing** marketplace with offer + claim
-- **Building collection day** with a pooled-m² meter and per-resident grouping
+- **Building collection day** with a pooled-m³ meter and per-resident grouping
 - **Profile** showing your listings, balance, and pool contributions
 
 All data is in-memory and resets on refresh — perfect for hackathon demoing
@@ -62,7 +62,7 @@ landing is at `/welcome` and the printable poster is at `/qr-poster`.
 ## Demo path (2-minute walkthrough)
 
 1. From the login screen, pick **Amelia Tran** in the demo dropdown.
-2. Go to **Share m²** → claim Kira's 0.5m² offer. Your balance jumps 1m² → 1.5m².
+2. Go to **Share m³** → claim Kira's 0.5m³ offer. Your balance jumps 1m³ → 1.5m³.
 3. Go to **Give-aways** → post an item. It appears in the grid.
 4. Switch persona (log out → log back in as **Ben Hartley**) → claim your
    posted item.

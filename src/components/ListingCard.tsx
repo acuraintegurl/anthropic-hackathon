@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { Calendar, Ruler } from 'lucide-react'
-import type { FurnitureListing } from '../types'
+import { CATEGORY_SHORT, type FurnitureListing } from '../types'
 import { useAppData } from '../context/AppDataContext'
-import { formatDateShort, formatM2 } from '../lib/utils'
+import { formatDateShort, formatM3 } from '../lib/utils'
 import { Badge } from './ui/Badge'
 
 export function ListingCard({ listing }: { listing: FurnitureListing }) {
@@ -32,6 +32,11 @@ export function ListingCard({ listing }: { listing: FurnitureListing }) {
             <Badge variant="neutral">Collected</Badge>
           )}
         </div>
+        <div className="absolute top-3 left-3">
+          <Badge variant="outline" className="bg-white/90 backdrop-blur-sm">
+            {CATEGORY_SHORT[listing.category]}
+          </Badge>
+        </div>
       </div>
       <div className="p-4 space-y-2">
         <h3 className="font-semibold text-slate-900 leading-snug">
@@ -43,7 +48,7 @@ export function ListingCard({ listing }: { listing: FurnitureListing }) {
         <div className="flex items-center gap-3 text-xs text-slate-600 pt-1">
           <span className="inline-flex items-center gap-1">
             <Ruler className="h-3.5 w-3.5" />
-            {formatM2(listing.estimatedM2)}
+            {formatM3(listing.estimatedM3)}
           </span>
           <span className="inline-flex items-center gap-1">
             <Calendar className="h-3.5 w-3.5" />

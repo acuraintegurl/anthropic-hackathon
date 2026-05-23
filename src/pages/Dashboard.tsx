@@ -17,7 +17,7 @@ import {
 } from '../components/ui/Card'
 import { EntitlementBar } from '../components/EntitlementBar'
 import { Badge } from '../components/ui/Badge'
-import { formatDate, formatM2, daysUntil } from '../lib/utils'
+import { formatDate, formatM3, daysUntil } from '../lib/utils'
 
 export function Dashboard() {
   const {
@@ -35,10 +35,10 @@ export function Dashboard() {
   const itemsGivenAway = listings.filter(
     (l) => l.status === 'claimed' || l.status === 'collected',
   ).length
-  const m2Shared = shares
+  const m3Shared = shares
     .filter((s) => s.status === 'claimed')
-    .reduce((sum, s) => sum + s.m2Amount, 0)
-  const m2Pooled = collectionItems.reduce((sum, ci) => sum + ci.estimatedM2, 0)
+    .reduce((sum, s) => sum + s.m3Amount, 0)
+  const m2Pooled = collectionItems.reduce((sum, ci) => sum + ci.estimatedM3, 0)
 
   const daysToCollection = daysUntil(collectionDay.scheduledDate)
   const organizer = getResident(collectionDay.organizerId)
@@ -64,7 +64,7 @@ export function Dashboard() {
           </CardHeader>
           <CardContent className="space-y-5">
             <EntitlementBar
-              remaining={currentUser.entitlementRemainingM2}
+              remaining={currentUser.entitlementRemainingM3}
               capacity={1}
             />
             <div className="flex flex-wrap gap-2 text-sm">
@@ -72,7 +72,7 @@ export function Dashboard() {
                 to="/entitlements"
                 className="inline-flex items-center gap-1.5 h-9 px-3 rounded-md border border-slate-300 bg-white text-slate-900 text-sm font-medium hover:bg-slate-50"
               >
-                <Share2 className="h-4 w-4" /> Offer or claim m²
+                <Share2 className="h-4 w-4" /> Offer or claim m³
               </Link>
               <Link
                 to="/collection-day"
@@ -123,13 +123,13 @@ export function Dashboard() {
         />
         <StatTile
           icon={<Share2 className="h-4 w-4" />}
-          label="m² shared between neighbours"
-          value={formatM2(m2Shared)}
+          label="m³ shared between neighbours"
+          value={formatM3(m3Shared)}
         />
         <StatTile
           icon={<PackagePlus className="h-4 w-4" />}
-          label="m² in pickup pool"
-          value={formatM2(m2Pooled)}
+          label="m³ in pickup pool"
+          value={formatM3(m2Pooled)}
         />
         <StatTile
           icon={<Recycle className="h-4 w-4" />}
@@ -190,7 +190,7 @@ export function Dashboard() {
         <Card>
           <CardHeader className="flex items-start justify-between">
             <div>
-              <CardTitle>m² currently on offer</CardTitle>
+              <CardTitle>m³ currently on offer</CardTitle>
               <CardDescription>
                 Neighbours with entitlement to spare
               </CardDescription>
@@ -205,7 +205,7 @@ export function Dashboard() {
           <CardContent className="space-y-3">
             {shares.filter((s) => s.status === 'offered').length === 0 && (
               <p className="text-sm text-slate-500">
-                No m² on offer right now.
+                No m³ on offer right now.
               </p>
             )}
             {shares
@@ -236,7 +236,7 @@ export function Dashboard() {
                         {share.note ?? 'Open to whoever needs it.'}
                       </p>
                     </div>
-                    <Badge variant="default">{formatM2(share.m2Amount)}</Badge>
+                    <Badge variant="default">{formatM3(share.m3Amount)}</Badge>
                   </div>
                 )
               })}

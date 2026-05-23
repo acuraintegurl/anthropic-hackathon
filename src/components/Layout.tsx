@@ -2,12 +2,12 @@ import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom'
 import { Building2, LogOut, User } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useAppData } from '../context/AppDataContext'
-import { cn, formatM2 } from '../lib/utils'
+import { cn, formatM3 } from '../lib/utils'
 
 const navItems = [
   { to: '/', label: 'Dashboard', end: true },
   { to: '/marketplace', label: 'Give-aways' },
-  { to: '/entitlements', label: 'Share m²' },
+  { to: '/entitlements', label: 'Share m³' },
   { to: '/collection-day', label: 'Collection day' },
   { to: '/profile', label: 'Profile' },
 ]
@@ -75,7 +75,7 @@ export function Layout() {
                     </p>
                     <p className="text-[10px] text-slate-500">
                       {currentUser.aptNumber} ·{' '}
-                      {formatM2(currentUser.entitlementRemainingM2)} left
+                      {formatM3(currentUser.entitlementRemainingM3)} left
                     </p>
                   </div>
                 </div>

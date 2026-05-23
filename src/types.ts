@@ -3,9 +3,11 @@ export type Resident = {
   name: string
   aptNumber: string
   email: string
-  entitlementRemainingM2: number
+  entitlementRemainingM3: number
   entitlementYear: string
 }
+
+export type ItemCategory = 'furniture' | 'whitegoods' | 'ewaste' | 'mattress'
 
 export type ListingStatus = 'available' | 'claimed' | 'collected'
 
@@ -15,7 +17,8 @@ export type FurnitureListing = {
   title: string
   description: string
   photoUrl: string
-  estimatedM2: number
+  category: ItemCategory
+  estimatedM3: number
   pickupBy: string
   status: ListingStatus
   claimedById?: string
@@ -27,7 +30,7 @@ export type EntitlementShareStatus = 'offered' | 'claimed'
 export type EntitlementShare = {
   id: string
   offeredById: string
-  m2Amount: number
+  m3Amount: number
   note?: string
   status: EntitlementShareStatus
   claimedById?: string
@@ -48,7 +51,8 @@ export type CollectionItem = {
   collectionDayId: string
   residentId: string
   title: string
-  estimatedM2: number
+  category: ItemCategory
+  estimatedM3: number
 }
 
 export type Building = {
@@ -56,4 +60,18 @@ export type Building = {
   name: string
   address: string
   totalUnits: number
+}
+
+export const CATEGORY_LABEL: Record<ItemCategory, string> = {
+  furniture: 'Household furniture',
+  whitegoods: 'White goods',
+  ewaste: 'E-waste',
+  mattress: 'Mattress',
+}
+
+export const CATEGORY_SHORT: Record<ItemCategory, string> = {
+  furniture: 'Furniture',
+  whitegoods: 'White goods',
+  ewaste: 'E-waste',
+  mattress: 'Mattress',
 }

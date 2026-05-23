@@ -12,7 +12,7 @@ import {
 import { useAuth } from '../context/AuthContext'
 import { useAppData } from '../context/AppDataContext'
 import { Button } from '../components/ui/Button'
-import { formatM2 } from '../lib/utils'
+import { formatM3 } from '../lib/utils'
 
 export function Welcome() {
   const [params] = useSearchParams()
@@ -26,12 +26,12 @@ export function Welcome() {
     const itemsRehomed = listings.filter(
       (l) => l.status === 'claimed' || l.status === 'collected',
     ).length
-    const m2Shared = shares
+    const m3Shared = shares
       .filter((s) => s.status === 'claimed')
-      .reduce((sum, s) => sum + s.m2Amount, 0)
+      .reduce((sum, s) => sum + s.m3Amount, 0)
     return {
       itemsRehomed,
-      m2Shared,
+      m3Shared,
       neighbours: residents.length,
     }
   }, [listings, shares, residents])
@@ -92,8 +92,8 @@ export function Welcome() {
           />
           <StatTile
             icon={<Share2 className="h-4 w-4" />}
-            value={formatM2(stats.m2Shared)}
-            label="m² shared"
+            value={formatM3(stats.m3Shared)}
+            label="m³ shared"
           />
           <StatTile
             icon={<Recycle className="h-4 w-4" />}
@@ -117,6 +117,20 @@ export function Welcome() {
           </p>
         </div>
 
+        <div className="mt-10 rounded-xl border border-brand-100 bg-brand-50/60 p-4">
+          <p className="text-[11px] uppercase tracking-wider text-brand-700 font-semibold">
+            From the City of Melbourne
+          </p>
+          <p className="mt-1.5 text-sm text-brand-900 leading-relaxed italic">
+            "If you live in a high rise building, you can ask your building
+            manager to book a collection for you."
+          </p>
+          <p className="mt-2 text-xs text-slate-600">
+            One free Hard Waste collection — for one cubic metre — per
+            address, per financial year.
+          </p>
+        </div>
+
         <div className="mt-12">
           <p className="text-xs uppercase tracking-wider text-slate-500 font-semibold">
             How it works
@@ -124,7 +138,7 @@ export function Welcome() {
           <ul className="mt-3 space-y-3">
             <Step
               n={1}
-              title="Donate or claim m²"
+              title="Donate or claim m³"
               body="Got an unused entitlement? Drop it in the pool. Need more for a couch you're tossing? Take some from a neighbour."
             />
             <Step

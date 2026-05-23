@@ -1,6 +1,7 @@
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Calendar, Ruler, User } from 'lucide-react'
 import { useAppData } from '../context/AppDataContext'
+import { CATEGORY_LABEL } from '../types'
 import { Button } from '../components/ui/Button'
 import { Badge } from '../components/ui/Badge'
 import {
@@ -9,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../components/ui/Card'
-import { formatDate, formatM2 } from '../lib/utils'
+import { formatDate, formatM3 } from '../lib/utils'
 
 export function ListingDetail() {
   const { id } = useParams()
@@ -62,9 +63,10 @@ export function ListingDetail() {
               <User className="h-4 w-4 text-slate-400" />
               From {poster?.name} ({poster?.aptNumber})
             </span>
+            <Badge variant="outline">{CATEGORY_LABEL[listing.category]}</Badge>
             <span className="inline-flex items-center gap-1.5">
               <Ruler className="h-4 w-4 text-slate-400" />
-              {formatM2(listing.estimatedM2)} footprint
+              {formatM3(listing.estimatedM3)} footprint
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Calendar className="h-4 w-4 text-slate-400" />

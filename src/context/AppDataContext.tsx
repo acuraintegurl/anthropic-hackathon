@@ -11,6 +11,7 @@ import type {
   CollectionItem,
   EntitlementShare,
   FurnitureListing,
+  ItemCategory,
   Resident,
 } from '../types'
 import {
@@ -28,13 +29,15 @@ type NewListingInput = {
   title: string
   description: string
   photoUrl: string
-  estimatedM2: number
+  category: ItemCategory
+  estimatedM3: number
   pickupBy: string
 }
 
 type NewCollectionItemInput = {
   title: string
-  estimatedM2: number
+  category: ItemCategory
+  estimatedM3: number
 }
 
 type AppData = {
@@ -52,7 +55,7 @@ type AppData = {
   claimListing: (id: string) => void
   withdrawListing: (id: string) => void
 
-  offerShare: (m2: number, note?: string) => boolean
+  offerShare: (m3: number, note?: string) => boolean
   claimShare: (id: string) => void
 
   addCollectionItem: (input: NewCollectionItemInput) => boolean
@@ -87,9 +90,9 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           r.id === residentId
             ? {
                 ...r,
-                entitlementRemainingM2: Math.max(
+                entitlementRemainingM3: Math.max(
                   0,
-                  Math.round((r.entitlementRemainingM2 + delta) * 100) / 100,
+                  Math.round((r.entitlementRemainingM3 + delta) * 100) / 100,
                 ),
               }
             : r,
@@ -141,19 +144,19 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   )
 
   const offerShare = useCallback(
-    (m2: number, note?: string): boolean => {
+    (m3: number, note?: string): boolean => {
       if (!currentUserId) return false
-      if (!currentUser || currentUser.entitlementRemainingM2 < m2) return false
+      if (!currentUser || currentUser.entitlementRemainingM3 < m3) return false
       const share: EntitlementShare = {
         id: uid('s'),
         offeredById: currentUserId,
-        m2Amount: m2,
+        m3Amount: m3,
         note,
         status: 'offered',
         createdAt: new Date().toISOString(),
       }
       setShares((prev) => [share, ...prev])
-      adjustEntitlement(currentUserId, -m2)
+      adjustEntitlement(currentUserId, -m3)
       return true
     },
     [currentUserId, currentUser, adjustEntitlement],
@@ -170,7 +173,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           s.id === id ? { ...s, status: 'claimed', claimedById: currentUserId } : s,
         ),
       )
-      adjustEntitlement(currentUserId, share.m2Amount)
+      adjustEntitlement(currentUserId, share.m3Amount)
     },
     [currentUserId, shares, adjustEntitlement],
   )
@@ -178,17 +181,18 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const addCollectionItem = useCallback(
     (input: NewCollectionItemInput): boolean => {
       if (!currentUserId) return false
-      if (!currentUser || currentUser.entitlementRemainingM2 < input.estimatedM2)
+      if (!currentUser || currentUser.entitlementRemainingM3 < input.estimatedM3)
         return false
       const item: CollectionItem = {
         id: uid('ci'),
         collectionDayId: collectionDay.id,
         residentId: currentUserId,
         title: input.title,
-        estimatedM2: input.estimatedM2,
+        category: input.category,
+        estimatedM3: input.estimatedM3,
       }
       setCollectionItems((prev) => [...prev, item])
-      adjustEntitlement(currentUserId, -input.estimatedM2)
+      adjustEntitlement(currentUserId, -input.estimatedM3)
       return true
     },
     [currentUserId, currentUser, collectionDay.id, adjustEntitlement],
@@ -200,7 +204,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       const item = collectionItems.find((c) => c.id === id)
       if (!item || item.residentId !== currentUserId) return
       setCollectionItems((prev) => prev.filter((c) => c.id !== id))
-      adjustEntitlement(currentUserId, item.estimatedM2)
+      adjustEntitlement(currentUserId, item.estimatedM3)
     },
     [currentUserId, collectionItems, adjustEntitlement],
   )

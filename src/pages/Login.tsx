@@ -7,7 +7,7 @@ import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Label } from '../components/ui/Label'
 import { Select } from '../components/ui/Select'
-import { formatM2 } from '../lib/utils'
+import { formatM3 } from '../lib/utils'
 
 export function Login() {
   const navigate = useNavigate()
@@ -133,7 +133,7 @@ export function Login() {
               <Sparkles className="h-4 w-4 text-brand-700 mt-0.5 shrink-0" />
               <p className="text-xs text-brand-900 leading-relaxed">
                 This prototype seeds 12 residents. Pick any of them to demo both
-                sides of a furniture swap or m² share.
+                sides of a furniture swap or m³ share.
               </p>
             </div>
             <div className="space-y-1.5">
@@ -146,7 +146,7 @@ export function Login() {
                 {residents.map((r) => (
                   <option key={r.id} value={r.id}>
                     {r.name} ({r.aptNumber}) —{' '}
-                    {formatM2(r.entitlementRemainingM2)} left
+                    {formatM3(r.entitlementRemainingM3)} left
                   </option>
                 ))}
               </Select>
